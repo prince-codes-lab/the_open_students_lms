@@ -155,28 +155,33 @@ export function EnrollForm({ user, course, tour, publicKeyOverride }: EnrollForm
           console.log("[open] Payment dialog closed by user")
           setProcessing(false)
         },
-        callback: async (payment) => {
-          try {
-            console.log("[open] Payment callback received:", payment.reference)
-            const verificationResponse = await fetch("/api/verify-payment", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ reference: payment.reference }),
+        callback: (payment) => {
+          console.log("[open] Payment callback received:", payment.reference)
+          // Verify payment asynchronously without blocking the callback
+          fetch("/api/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ reference: payment.reference }),
+          })
+            .then((verificationResponse) => {
+              return verificationResponse.json().then((verificationResult) => ({
+                response: verificationResponse,
+                result: verificationResult,
+              }))
             })
-
-            const verificationResult = await verificationResponse.json()
-            if (!verificationResponse.ok || !verificationResult.success) {
-              throw new Error(verificationResult.error || "Payment verification failed")
-            }
-
-            console.log("[open] Payment verified successfully")
-            router.push(`/enrollment-success?reference=${payment.reference}`)
-          } catch (error) {
-            const errorMsg = error instanceof Error ? error.message : "Payment verification failed. Please contact support with your reference."
-            console.error("[open] Payment verification error:", errorMsg)
-            setError(errorMsg)
-            setProcessing(false)
-          }
+            .then(({ response, result }) => {
+              if (!response.ok || !result.success) {
+                throw new Error(result.error || "Payment verification failed")
+              }
+              console.log("[open] Payment verified successfully")
+              router.push(`/enrollment-success?reference=${payment.reference}`)
+            })
+            .catch((error) => {
+              const errorMsg = error instanceof Error ? error.message : "Payment verification failed. Please contact support with your reference."
+              console.error("[open] Payment verification error:", errorMsg)
+              setError(errorMsg)
+              setProcessing(false)
+            })
         },
       })
 
