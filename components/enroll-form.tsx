@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CheckCircle2 } from "lucide-react"
 import { LoadingModal } from "@/components/loading-modal"
 import { PAYSTACK_PUBLIC_KEY, generatePaymentReference } from "@/lib/paystack"
@@ -53,6 +54,7 @@ export function EnrollForm({ user, course, tour, publicKeyOverride }: EnrollForm
   const [currency, setCurrency] = useState<"NGN" | "USD">("NGN")
   const [processing, setProcessing] = useState(false)
   const [scriptLoaded, setScriptLoaded] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const item = useMemo(() => course || tour || null, [course, tour])
   const itemType: "course" | "tour" | null = course ? "course" : tour ? "tour" : null
@@ -61,9 +63,13 @@ export function EnrollForm({ user, course, tour, publicKeyOverride }: EnrollForm
     const script = document.createElement("script")
     script.src = "https://js.paystack.co/v1/inline.js"
     script.async = true
-    script.onload = () => setScriptLoaded(true)
+    script.onload = () => {
+      console.log("[open] Paystack script loaded")
+      setScriptLoaded(true)
+    }
     script.onerror = () => {
-      alert("Failed to load the payment system. Please refresh the page.")
+      console.error("[open] Failed to load Paystack script")
+      setError("Failed to load the payment system. Please refresh the page.")
     }
     document.body.appendChild(script)
 
@@ -85,27 +91,32 @@ export function EnrollForm({ user, course, tour, publicKeyOverride }: EnrollForm
   const handlePayment = async () => {
     if (!user || !item || !itemType) return
 
-    if (!scriptLoaded || !window.PaystackPop) {
-      alert("Payment system is still loading. Please wait a moment and try again.")
+    if (!scriptLoaded) {
+      setError("Payment system is loading. Please wait a moment and try again.")
       return
     }
 
-    if (!activePublicKey || activePublicKey === "undefined") {
-      alert(
-        "Payment system is not configured. Please contact the administrator to add NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY.",
-      )
+    if (!window.PaystackPop) {
+      setError("Payment system failed to initialize. Please refresh the page and try again.")
       return
     }
 
-    if (!price || Number.isNaN(price)) {
-      alert("Unable to determine the price for this enrollment. Please contact support.")
+    if (!activePublicKey || activePublicKey === "" || activePublicKey === "undefined") {
+      setError("Payment system is not configured. Please contact the administrator.")
       return
     }
 
+    if (!price || Number.isNaN(price) || price <= 0) {
+      setError("Invalid price for this enrollment. Please contact support.")
+      return
+    }
+
+    setError(null)
     setProcessing(true)
 
     try {
       const reference = generatePaymentReference()
+      console.log("[open] Creating enrollment with reference:", reference)
 
       const response = await fetch("/api/enrollments", {
         method: "POST",
@@ -125,6 +136,8 @@ export function EnrollForm({ user, course, tour, publicKeyOverride }: EnrollForm
         throw new Error(data.error || "Failed to create enrollment. Please try again.")
       }
 
+      console.log("[open] Enrollment created, opening Paystack popup")
+
       const handler = window.PaystackPop.setup({
         key: activePublicKey,
         email: user.email,
@@ -139,10 +152,12 @@ export function EnrollForm({ user, course, tour, publicKeyOverride }: EnrollForm
           tour_title: tour?.title,
         },
         onClose: () => {
+          console.log("[open] Payment dialog closed by user")
           setProcessing(false)
         },
         callback: async (payment) => {
           try {
+            console.log("[open] Payment callback received:", payment.reference)
             const verificationResponse = await fetch("/api/verify-payment", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -154,13 +169,12 @@ export function EnrollForm({ user, course, tour, publicKeyOverride }: EnrollForm
               throw new Error(verificationResult.error || "Payment verification failed")
             }
 
+            console.log("[open] Payment verified successfully")
             router.push(`/enrollment-success?reference=${payment.reference}`)
           } catch (error) {
-            alert(
-              error instanceof Error
-                ? error.message
-                : "Payment verification failed. Please contact support with your reference.",
-            )
+            const errorMsg = error instanceof Error ? error.message : "Payment verification failed. Please contact support with your reference."
+            console.error("[open] Payment verification error:", errorMsg)
+            setError(errorMsg)
             setProcessing(false)
           }
         },
@@ -168,7 +182,9 @@ export function EnrollForm({ user, course, tour, publicKeyOverride }: EnrollForm
 
       handler.openIframe()
     } catch (error) {
-      alert(error instanceof Error ? error.message : "An error occurred. Please try again.")
+      const errorMsg = error instanceof Error ? error.message : "An error occurred. Please try again."
+      console.error("[open] Payment initiation error:", errorMsg)
+      setError(errorMsg)
       setProcessing(false)
     }
   }
@@ -203,6 +219,12 @@ export function EnrollForm({ user, course, tour, publicKeyOverride }: EnrollForm
             <h1 className="text-4xl md:text-5xl font-bold text-[#4E0942]">Complete Your Enrollment</h1>
             <p className="text-lg text-gray-700">You&apos;re one step away from starting your learning journey</p>
           </div>
+
+          {error && (
+            <Alert variant="destructive" className="border-2 border-red-500">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
           <Card className="border-2 border-[#DD91D0] shadow-xl animate-scale-in">
             <CardHeader>

@@ -3,11 +3,12 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Textarea } from "@/components/ui/textarea"
 import { Save } from "lucide-react"
 import Image from "next/image"
 import { AdminGuard } from "@/components/admin-guard"
@@ -20,10 +21,22 @@ export default function AdminSettings() {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [sliderItems, setSliderItems] = useState<Array<{ imageUrl: string; caption?: string }>>([])
+  const [founder, setFounder] = useState<any>(null)
 
   useEffect(() => {
     fetchSettings()
+    fetchFounder()
   }, [])
+
+  const fetchFounder = async () => {
+    try {
+      const response = await fetch("/api/admin/founder")
+      const data = await response.json()
+      setFounder(data || {})
+    } catch (error) {
+      console.error("[open] Error fetching founder:", error)
+    }
+  }
 
   const fetchSettings = async () => {
     try {
@@ -53,6 +66,28 @@ export default function AdminSettings() {
       }
       reader.readAsDataURL(file)
     }
+  }
+
+  const handleFounderImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFounder({
+          ...founder,
+          imageUrl: reader.result,
+          imageName: file.name,
+        })
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleFounderChange = (field: string, value: string) => {
+    setFounder({
+      ...founder,
+      [field]: value,
+    })
   }
 
   const handleEnvChange = (key: string, value: string) => {
@@ -100,23 +135,35 @@ export default function AdminSettings() {
     }
   }
 
-  const handleSave = async () => {
+  const handleSaveAll = async () => {
     setSaving(true)
     try {
-      const response = await fetch("/api/admin/settings", {
+      // Save settings
+      const settingsResponse = await fetch("/api/admin/settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
       })
 
-      if (response.ok) {
-        setMessage({ type: "success", text: "Settings saved successfully!" })
-      } else {
-        setMessage({ type: "error", text: "Failed to save settings" })
+      if (!settingsResponse.ok) {
+        throw new Error("Failed to save settings")
       }
+
+      // Save founder
+      const founderResponse = await fetch("/api/admin/founder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(founder),
+      })
+
+      if (!founderResponse.ok) {
+        throw new Error("Failed to save founder information")
+      }
+
+      setMessage({ type: "success", text: "All changes saved successfully!" })
     } catch (error) {
-      console.error("[open] Error saving settings:", error)
-      setMessage({ type: "error", text: "Error saving settings" })
+      console.error("[open] Error saving:", error)
+      setMessage({ type: "error", text: error instanceof Error ? error.message : "Error saving changes" })
     } finally {
       setSaving(false)
     }
@@ -138,79 +185,307 @@ export default function AdminSettings() {
           )}
 
           <div className="grid gap-6">
-            {/* Logo Upload */}
-            <Card className="border-2 border-[#DD91D0]">
-              <CardHeader>
-                <CardTitle>Site Logo</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-6">
-                  {logoPreview && (
+          {/* Founder Section */}
+          <Card className="border-2 border-[#DD91D0]">
+            <CardHeader>
+              <CardTitle>Founder Information (Homepage)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-3 gap-6 items-start">
+                <div className="md:col-span-1">
+                  {founder?.imageUrl && (
                     <Image
-                      src={logoPreview || "/placeholder.svg"}
-                      alt="Logo preview"
-                      width={96}
-                      height={96}
+                      src={founder.imageUrl || "/placeholder.svg"}
+                      alt="Founder"
+                      width={200}
+                      height={200}
                       unoptimized
-                      className="h-24 w-24 object-contain"
+                      className="h-40 w-40 object-cover rounded-lg"
                     />
                   )}
-                  <div className="flex-1">
-                    <Label htmlFor="logo-upload" className="block mb-2">
-                      Upload New Logo
+                  <div className="mt-4">
+                    <Label htmlFor="founder-image" className="block mb-2">
+                      Founder Image
                     </Label>
                     <Input
-                      id="logo-upload"
+                      id="founder-image"
                       type="file"
                       accept="image/*"
-                      onChange={handleLogoUpload}
+                      onChange={handleFounderImageUpload}
                       className="cursor-pointer"
                     />
                     <p className="text-xs text-gray-600 mt-2">PNG, JPG up to 5MB</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-          {/* Environment Variables */}
-          <Card className="border-2 border-[#FF2768]">
-              <CardHeader>
-                <CardTitle>Environment Variables</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-4">
-                  {[
-                    { key: "NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY", label: "Paystack Public Key" },
-                    { key: "PAYSTACK_SECRET_KEY", label: "Paystack Secret Key" },
-                    { key: "NEXT_PUBLIC_SITE_URL", label: "Site URL" },
-                    { key: "JWT_SECRET", label: "JWT Secret" },
-                    { key: "MONGODB_URI", label: "MongoDB URI 1" },
-                    { key: "MONGODB_URI_2", label: "MongoDB URI 2" },
-                  ].map((env) => (
-                    <div key={env.key}>
-                      <Label htmlFor={env.key} className="text-sm">
-                        {env.label}
-                      </Label>
-                      <Input
-                        id={env.key}
-                        type={env.key.includes("SECRET") || env.key.includes("JWT") ? "password" : "text"}
-                        value={
-                          settings?.environmentVariables?.[env.key] ??
-                          settings?.environmentDefaults?.[env.key] ??
-                          ""
-                        }
-                        onChange={(e) => handleEnvChange(env.key, e.target.value)}
-                        placeholder={
-                          settings?.environmentDefaults?.[env.key]
-                            ? settings.environmentDefaults[env.key]
-                            : `Enter ${env.label}`
-                        }
-                        className="mt-1"
-                      />
-                    </div>
-                  ))}
+                <div className="md:col-span-2 space-y-4">
+                  <div>
+                    <Label htmlFor="founder-name">Founder Name</Label>
+                    <Input
+                      id="founder-name"
+                      type="text"
+                      value={founder?.name || ""}
+                      onChange={(e) => handleFounderChange("name", e.target.value)}
+                      placeholder="Founder name"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="founder-title">Title/Position</Label>
+                    <Input
+                      id="founder-title"
+                      type="text"
+                      value={founder?.title || ""}
+                      onChange={(e) => handleFounderChange("title", e.target.value)}
+                      placeholder="e.g., Founder & Visionary"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="founder-bio">Biography</Label>
+                    <Textarea
+                      id="founder-bio"
+                      value={founder?.bio || ""}
+                      onChange={(e) => handleFounderChange("bio", e.target.value)}
+                      placeholder="Founder biography..."
+                      rows={4}
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
-              </CardContent>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Admin Credentials */}
+          <Card className="border-2 border-[#4E0942]">
+            <CardHeader>
+              <CardTitle>Admin Login Credentials</CardTitle>
+              <CardDescription>Update admin email and password</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="admin-email" className="text-sm">
+                    Admin Email (NEXT_PUBLIC_ADMIN_EMAIL)
+                  </Label>
+                  <Input
+                    id="admin-email"
+                    type="email"
+                    value={
+                      settings?.environmentVariables?.["NEXT_PUBLIC_ADMIN_EMAIL"] ||
+                      settings?.environmentDefaults?.["NEXT_PUBLIC_ADMIN_EMAIL"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("NEXT_PUBLIC_ADMIN_EMAIL", e.target.value)}
+                    placeholder="admin@example.com"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="admin-password" className="text-sm">
+                    Admin Password (ADMIN_PASSWORD)
+                  </Label>
+                  <Input
+                    id="admin-password"
+                    type="password"
+                    value={
+                      settings?.environmentVariables?.["ADMIN_PASSWORD"] ||
+                      settings?.environmentDefaults?.["ADMIN_PASSWORD"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("ADMIN_PASSWORD", e.target.value)}
+                    placeholder="Secure password"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+              <Alert variant="destructive">
+                <AlertDescription>
+                  ⚠️ Changing credentials requires deployment. Values are stored in environment and will take effect on next deploy.
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
+
+          {/* Paystack Configuration */}
+          <Card className="border-2 border-[#FF2768]">
+            <CardHeader>
+              <CardTitle>Payment Gateway (Paystack)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="paystack-public" className="text-sm">
+                    Paystack Public Key
+                  </Label>
+                  <Input
+                    id="paystack-public"
+                    type="password"
+                    value={
+                      settings?.environmentVariables?.["NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY"] ||
+                      settings?.environmentDefaults?.["NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY", e.target.value)}
+                    placeholder="pk_test_..."
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="paystack-secret" className="text-sm">
+                    Paystack Secret Key
+                  </Label>
+                  <Input
+                    id="paystack-secret"
+                    type="password"
+                    value={
+                      settings?.environmentVariables?.["PAYSTACK_SECRET_KEY"] ||
+                      settings?.environmentDefaults?.["PAYSTACK_SECRET_KEY"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("PAYSTACK_SECRET_KEY", e.target.value)}
+                    placeholder="sk_test_..."
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Mailchimp Configuration */}
+          <Card className="border-2 border-[#FEEB00]">
+            <CardHeader>
+              <CardTitle>Newsletter (Mailchimp)</CardTitle>
+              <CardDescription>Configure Mailchimp for newsletter subscriptions</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="mailchimp-key" className="text-sm">
+                    Mailchimp API Key
+                  </Label>
+                  <Input
+                    id="mailchimp-key"
+                    type="password"
+                    value={
+                      settings?.environmentVariables?.["MAILCHIMP_API_KEY"] ||
+                      settings?.environmentDefaults?.["MAILCHIMP_API_KEY"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("MAILCHIMP_API_KEY", e.target.value)}
+                    placeholder="xxxxxxxxxxxxx-us1"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="mailchimp-audience" className="text-sm">
+                    Mailchimp Audience ID
+                  </Label>
+                  <Input
+                    id="mailchimp-audience"
+                    type="text"
+                    value={
+                      settings?.environmentVariables?.["MAILCHIMP_AUDIENCE_ID"] ||
+                      settings?.environmentDefaults?.["MAILCHIMP_AUDIENCE_ID"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("MAILCHIMP_AUDIENCE_ID", e.target.value)}
+                    placeholder="xxxxxxxxxx"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Database Configuration */}
+          <Card className="border-2 border-[#4E0942]">
+            <CardHeader>
+              <CardTitle>Database Configuration</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="mongodb-1" className="text-sm">
+                    MongoDB URI (Main)
+                  </Label>
+                  <Input
+                    id="mongodb-1"
+                    type="password"
+                    value={
+                      settings?.environmentVariables?.["MONGODB_URI"] ||
+                      settings?.environmentDefaults?.["MONGODB_URI"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("MONGODB_URI", e.target.value)}
+                    placeholder="mongodb+srv://..."
+                    className="mt-1 font-mono text-xs"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="mongodb-2" className="text-sm">
+                    MongoDB URI (Secondary - Founder/Admin)
+                  </Label>
+                  <Input
+                    id="mongodb-2"
+                    type="password"
+                    value={
+                      settings?.environmentVariables?.["MONGODB_URI_2"] ||
+                      settings?.environmentDefaults?.["MONGODB_URI_2"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("MONGODB_URI_2", e.target.value)}
+                    placeholder="mongodb+srv://..."
+                    className="mt-1 font-mono text-xs"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Site Configuration */}
+          <Card className="border-2 border-[#DD91D0]">
+            <CardHeader>
+              <CardTitle>Site Configuration</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="site-url" className="text-sm">
+                    Site URL
+                  </Label>
+                  <Input
+                    id="site-url"
+                    type="text"
+                    value={
+                      settings?.environmentVariables?.["NEXT_PUBLIC_SITE_URL"] ||
+                      settings?.environmentDefaults?.["NEXT_PUBLIC_SITE_URL"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("NEXT_PUBLIC_SITE_URL", e.target.value)}
+                    placeholder="https://example.com"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="jwt-secret" className="text-sm">
+                    JWT Secret
+                  </Label>
+                  <Input
+                    id="jwt-secret"
+                    type="password"
+                    value={
+                      settings?.environmentVariables?.["JWT_SECRET"] ||
+                      settings?.environmentDefaults?.["JWT_SECRET"] ||
+                      ""
+                    }
+                    onChange={(e) => handleEnvChange("JWT_SECRET", e.target.value)}
+                    placeholder="Change this to a secure random string"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+            </CardContent>
           </Card>
 
           {/* Homepage Slider */}
@@ -299,9 +574,9 @@ export default function AdminSettings() {
 
             {/* Actions */}
             <div className="flex gap-4">
-              <Button onClick={handleSave} disabled={saving} className="bg-[#4E0942] hover:bg-[#4E0942]/90 text-white">
+              <Button onClick={handleSaveAll} disabled={saving} className="bg-[#4E0942] hover:bg-[#4E0942]/90 text-white">
                 <Save className="mr-2" size={18} />
-                {saving ? "Saving..." : "Save Settings"}
+                {saving ? "Saving..." : "Save All Settings"}
               </Button>
               <Button
                 type="button"
