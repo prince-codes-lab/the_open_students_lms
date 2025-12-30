@@ -3,7 +3,7 @@
 
 function getAdminCredentials() {
   return {
-    email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || process.env.ADMIN_EMAIL || "",
+    email: process.env.ADMIN_EMAIL || process.env.NEXT_PUBLIC_ADMIN_EMAIL || "",
     password: process.env.ADMIN_PASSWORD || "",
   }
 }

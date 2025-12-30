@@ -3,6 +3,7 @@ import { createUser } from "@/lib/auth/mongodb-auth"
 import { Profile } from "@/lib/mongodb/models/Profile"
 import { connectDB } from "@/lib/mongodb/connection"
 import { NextResponse } from "next/server"
+import { sendEmail, generateWelcomeEmail } from "@/lib/email"
 
 export async function POST(request: Request) {
   try {
@@ -63,6 +64,23 @@ export async function POST(request: Request) {
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60,
     })
+
+    // Send welcome email asynchronously (don't block the response)
+    try {
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://theopenstudents.com"
+      const confirmationLink = `${siteUrl}/auth/sign-up-success?email=${encodeURIComponent(email)}&confirmed=true`
+      
+      const emailContent = generateWelcomeEmail(fullName, confirmationLink)
+      await sendEmail({
+        to: email,
+        subject: "Welcome to The OPEN Students - Confirm Your Email",
+        html: emailContent,
+      })
+      console.log("[open] Welcome email sent to:", email)
+    } catch (emailError) {
+      console.error("[open] Welcome email sending error:", emailError)
+      // Don't fail the signup if email sending fails
+    }
 
     return response
   } catch (error) {
