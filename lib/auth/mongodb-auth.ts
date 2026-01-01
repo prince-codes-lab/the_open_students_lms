@@ -14,6 +14,11 @@ export async function authenticateUser(email: string, password: string) {
       return { success: false, error: "User not found" }
     }
 
+    // Check if email is verified
+    if (!user.emailVerified) {
+      return { success: false, error: "Please verify your email before logging in", emailNotVerified: true }
+    }
+
     const isPasswordValid = await user.comparePassword(password)
     if (!isPasswordValid) {
       return { success: false, error: "Invalid password" }
@@ -26,6 +31,7 @@ export async function authenticateUser(email: string, password: string) {
         email: user.email,
         fullName: user.fullName,
         role: user.role,
+        emailVerified: user.emailVerified,
       },
     }
   } catch (error) {
@@ -78,11 +84,18 @@ export async function createUser(email: string, password: string, fullName: stri
       return { success: false, error: "User already exists" }
     }
 
+    // Generate verification token
+    const verificationToken = require("crypto").randomBytes(32).toString("hex")
+    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+
     const user = new User({
       email,
       password,
       fullName,
       role: "student",
+      emailVerified: false,
+      verificationToken,
+      verificationTokenExpiry,
     })
 
     await user.save()
@@ -93,10 +106,54 @@ export async function createUser(email: string, password: string, fullName: stri
         id: user._id.toString(),
         email: user.email,
         fullName: user.fullName,
+        emailVerified: user.emailVerified,
+        verificationToken: verificationToken,
       },
     }
   } catch (error) {
     console.error("[open] User creation error:", error)
     return { success: false, error: "Failed to create user" }
+  }
+}
+
+export async function verifyEmail(email: string, verificationToken: string) {
+  try {
+    const mongoUri = process.env.MONGODB_URI
+    if (!mongoUri) throw new Error("MONGODB_URI not configured")
+
+    await connectDB(mongoUri)
+
+    const user = await User.findOne({ email })
+    if (!user) {
+      return { success: false, error: "User not found" }
+    }
+
+    // Check if token matches and hasn't expired
+    if (user.verificationToken !== verificationToken) {
+      return { success: false, error: "Invalid verification token" }
+    }
+
+    if (!user.verificationTokenExpiry || user.verificationTokenExpiry < new Date()) {
+      return { success: false, error: "Verification token has expired" }
+    }
+
+    // Mark email as verified
+    user.emailVerified = true
+    user.verificationToken = undefined
+    user.verificationTokenExpiry = undefined
+    await user.save()
+
+    return {
+      success: true,
+      user: {
+        id: user._id.toString(),
+        email: user.email,
+        fullName: user.fullName,
+        emailVerified: user.emailVerified,
+      },
+    }
+  } catch (error) {
+    console.error("[open] Email verification error:", error)
+    return { success: false, error: "Email verification failed" }
   }
 }

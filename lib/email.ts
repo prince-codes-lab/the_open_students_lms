@@ -31,6 +31,10 @@ export async function sendEmail(options: EmailOptions): Promise<{ success: boole
       return { success: true } // Don't fail signup if email is not configured
     }
 
+    // Verify transporter before sending
+    await transporter.verify()
+    console.log("[open] SMTP connection verified")
+
     const result = await transporter.sendMail({
       from: process.env.SMTP_FROM || "noreply@theopenstudents.com",
       to,
@@ -44,8 +48,9 @@ export async function sendEmail(options: EmailOptions): Promise<{ success: boole
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : "Failed to send email"
     console.error("[open] Email sending error:", errorMsg)
-    // Don't fail the operation if email fails
-    return { success: true }
+    console.error("[open] Error details:", error)
+    // Don't fail the operation if email fails but log the error
+    return { success: true, error: errorMsg }
   }
 }
 
@@ -257,6 +262,172 @@ export function generateWelcomeEmail(
               </div>
               <p style="margin-top: 15px; font-size: 11px; color: #bbb;">
                 This email was sent to ${to}. You can manage your preferences anytime.
+              </p>
+            </div>
+          </div>
+        </div>
+      </body>
+    </html>
+  `
+}
+export function generateVerificationEmail(
+  fullName: string,
+  verificationLink: string,
+  to: string,
+): string {
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            line-height: 1.6; 
+            color: #333;
+            background-color: #f4f4f4;
+          }
+          .wrapper { background-color: #f4f4f4; padding: 20px; }
+          .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          }
+          .header { 
+            background: linear-gradient(135deg, #4E0942 0%, #6b0c5c 100%);
+            color: white; 
+            padding: 40px 20px; 
+            text-align: center; 
+          }
+          .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+          }
+          .content { 
+            padding: 40px 30px; 
+          }
+          .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #4E0942;
+          }
+          .intro-text {
+            margin-bottom: 20px;
+            color: #666;
+          }
+          .cta-section {
+            text-align: center;
+            margin: 30px 0;
+          }
+          .button { 
+            display: inline-block; 
+            padding: 14px 40px; 
+            background-color: #FEEB00; 
+            color: #4E0942; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: 700;
+            font-size: 16px;
+            border: 2px solid #FEEB00;
+            transition: all 0.3s ease;
+          }
+          .button:hover {
+            background-color: #fff59d;
+            border-color: #FEEB00;
+          }
+          .link-text {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #999;
+          }
+          .link-text a {
+            color: #4E0942;
+            text-decoration: none;
+            word-break: break-all;
+            background-color: #f9f9f9;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: block;
+            margin-top: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+          }
+          .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #856404;
+          }
+          .footer { 
+            background-color: #f4f4f4;
+            padding: 30px; 
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            font-size: 12px; 
+            color: #999;
+          }
+          .footer-links a {
+            color: #4E0942;
+            text-decoration: none;
+            margin: 0 10px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="wrapper">
+          <div class="container">
+            <div class="header">
+              <div class="logo">🎓 The OPEN Students</div>
+            </div>
+
+            <div class="content">
+              <div class="greeting">Verify Your Email, ${fullName}! ✉️</div>
+              
+              <p class="intro-text">
+                Thank you for signing up with The OPEN Students! We're excited to have you join our community. To complete your registration and access your account, please verify your email address.
+              </p>
+
+              <div class="cta-section">
+                <p style="margin-bottom: 15px; color: #666;">Click the button below to verify your email:</p>
+                <a href="${verificationLink}" class="button">Verify Email Address</a>
+                <div class="link-text">
+                  If the button doesn't work, copy and paste this link:<br>
+                  <a href="${verificationLink}">${verificationLink}</a>
+                </div>
+              </div>
+
+              <div class="warning">
+                <strong>⏰ Important:</strong> This link will expire in 24 hours. If it expires, you'll need to request a new verification email.
+              </div>
+
+              <p style="margin-top: 20px; color: #999; font-size: 14px;">
+                Once verified, you'll have full access to:<br>
+                ✓ All courses and learning programs<br>
+                ✓ Progress tracking and certificates<br>
+                ✓ Community features<br>
+                ✓ Exclusive educational tours<br>
+              </p>
+            </div>
+
+            <div class="footer">
+              <p style="margin-bottom: 10px;">&copy; 2025 The OPEN Students. All rights reserved.</p>
+              <div class="footer-links">
+                <a href="https://theopenstudents.com">Website</a>
+                <a href="mailto:support@theopenstudents.com">Support</a>
+              </div>
+              <p style="margin-top: 15px; font-size: 11px; color: #bbb;">
+                This email was sent to ${to}.
               </p>
             </div>
           </div>

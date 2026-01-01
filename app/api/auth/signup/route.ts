@@ -3,7 +3,7 @@ import { createUser } from "@/lib/auth/mongodb-auth"
 import { Profile } from "@/lib/mongodb/models/Profile"
 import { connectDB } from "@/lib/mongodb/connection"
 import { NextResponse } from "next/server"
-import { sendEmail, generateWelcomeEmail } from "@/lib/email"
+import { sendEmail, generateVerificationEmail } from "@/lib/email"
 
 export async function POST(request: Request) {
   try {
@@ -42,47 +42,42 @@ export async function POST(request: Request) {
       // Continue even if profile creation fails
     }
 
-    const token = await createJWT({
-      userId: (result.user!).id,
-      email: (result.user!).email,
-      role: "student",
-    })
-
-    const response = NextResponse.json({ success: true, user: result.user }, { status: 201 })
-
-    const isHttps = (() => {
-      try {
-        return new URL(request.url).protocol === "https:"
-      } catch {
-        return false
-      }
-    })()
-
-    response.cookies.set("auth_token", token, {
-      httpOnly: true,
-      secure: isHttps,
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60,
-    })
-
-    // Send welcome email asynchronously (don't block the response)
+    // Send verification email BEFORE creating JWT
     try {
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://theopenstudents.com"
-      const confirmationLink = `${siteUrl}/auth/sign-up-success?email=${encodeURIComponent(email)}&confirmed=true`
+      const verificationLink = `${siteUrl}/api/auth/verify-email?email=${encodeURIComponent(email)}&token=${result.user?.verificationToken}`
       
-      const emailContent = generateWelcomeEmail(fullName, confirmationLink)
-      await sendEmail({
+      const emailContent = generateVerificationEmail(fullName, verificationLink, email)
+      const emailResult = await sendEmail({
         to: email,
-        subject: "Welcome to The OPEN Students - Confirm Your Email",
+        subject: "Verify Your Email - The OPEN Students",
         html: emailContent,
       })
-      console.log("[open] Welcome email sent to:", email)
+      
+      if (emailResult.error) {
+        console.error("[open] Email sending failed:", emailResult.error)
+      } else {
+        console.log("[open] Verification email sent to:", email)
+      }
     } catch (emailError) {
-      console.error("[open] Welcome email sending error:", emailError)
-      // Don't fail the signup if email sending fails
+      console.error("[open] Verification email error:", emailError)
+      // Don't fail signup if email sending fails, but warn user
     }
 
-    return response
+    // Return response indicating email verification is required
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Account created! Please check your email to verify your account.",
+        user: {
+          id: result.user?.id,
+          email: result.user?.email,
+          fullName: result.user?.fullName,
+        },
+        emailVerificationRequired: true,
+      },
+      { status: 201 },
+    )
   } catch (error) {
     console.error("[open] Signup error:", error)
     return NextResponse.json({ error: "Signup failed" }, { status: 500 })

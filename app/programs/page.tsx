@@ -113,17 +113,19 @@ export default async function ProgramsPage() {
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in-up">
-            <Badge className="bg-[#FEEB00] text-[#4E0942] hover:bg-[#FEEB00]/90 text-sm font-bold px-4 py-2">
-              Skills Acquisition Programs
-            </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold text-white text-balance">
-              Master Skills That <span className="text-[#FEEB00]">Matter</span>
-            </h1>
-            <p className="text-xl text-white/90 leading-relaxed max-w-2xl mx-auto">
-              Choose from our comprehensive range of practical courses designed to equip you with real-world skills.
-              Each program includes guided workbooks and certificates upon completion.
-            </p>
+          <div className="max-w-4xl mx-auto animate-fade-in-up">
+            <div className="bg-[#4E0942] rounded-2xl px-8 py-12 text-center">
+              <Badge className="bg-[#FEEB00] text-[#4E0942] hover:bg-[#FEEB00]/90 text-sm font-bold px-4 py-2">
+                Skills Acquisition Programs
+              </Badge>
+              <h1 className="mt-6 text-5xl md:text-6xl font-bold text-white text-balance">
+                Master Skills That <span className="text-[#FEEB00]">Matter</span>
+              </h1>
+              <p className="mt-4 text-xl text-white/90 leading-relaxed max-w-2xl mx-auto">
+                Choose from our comprehensive range of practical courses designed to equip you with real-world skills.
+                Each program includes guided workbooks and certificates upon completion.
+              </p>
+            </div>
           </div>
         </div>
       </section>

@@ -95,9 +95,13 @@ SMTP_FROM=verified-sender@yourdomain.com
 
 2. Create a test account at [http://localhost:3000/auth/sign-up](http://localhost:3000/auth/sign-up)
 
-3. Check your email inbox for the welcome message
+3. Check your email inbox for a **verification email** with the subject "Verify Your Email - The OPEN Students"
 
-4. If not received:
+4. Click the verification link in the email to confirm your email address
+
+5. Once verified, you can log in at [http://localhost:3000/auth/login](http://localhost:3000/auth/login)
+
+6. If verification email not received:
    - Check spam/junk folder
    - Verify environment variables are correct
    - Check server logs for errors

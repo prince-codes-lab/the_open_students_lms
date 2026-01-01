@@ -13,6 +13,17 @@ export async function POST(request: Request) {
     const result = await authenticateUser(email, password)
 
     if (!result.success) {
+      // If email not verified, return specific error
+      if ((result as any).emailNotVerified) {
+        return NextResponse.json(
+          {
+            error: result.error,
+            emailNotVerified: true,
+            email: email,
+          },
+          { status: 403 },
+        )
+      }
       return NextResponse.json({ error: result.error }, { status: 401 })
     }
 
