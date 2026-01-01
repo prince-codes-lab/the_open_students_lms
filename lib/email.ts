@@ -1,8 +1,17 @@
-// Email sending utilities using Resend
-// Resend ensures emails reach inbox (not spam) with proper authentication
-import { Resend } from "resend"
+// Email sending utilities using Nodemailer
+import nodemailer from "nodemailer"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || "localhost",
+  port: parseInt(process.env.SMTP_PORT || "587"),
+  secure: process.env.SMTP_SECURE === "true",
+  auth: process.env.SMTP_USER
+    ? {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      }
+    : undefined,
+})
 
 interface EmailOptions {
   to: string
@@ -14,27 +23,23 @@ export async function sendEmail(options: EmailOptions): Promise<{ success: boole
   const { to, subject, html } = options
 
   try {
-    // Validate API key
-    if (!process.env.RESEND_API_KEY) {
-      console.warn("[open] RESEND_API_KEY not configured - email will not be sent")
+    // Validate SMTP configuration
+    if (!process.env.SMTP_HOST && !process.env.SMTP_USER) {
+      console.warn("[open] SMTP not configured - email will not be sent")
       console.log("[open] Email would be sent to:", to)
       console.log("[open] Subject:", subject)
       return { success: true } // Don't fail signup if email is not configured
     }
 
-    const result = await resend.emails.send({
-      from: "The OPEN Students <noreply@theopenstudents.com>",
+    const result = await transporter.sendMail({
+      from: process.env.SMTP_FROM || "noreply@theopenstudents.com",
       to,
       subject,
       html,
       replyTo: "support@theopenstudents.com",
     })
 
-    if (result.error) {
-      throw new Error(result.error.message)
-    }
-
-    console.log("[open] Email sent successfully:", result.data?.id)
+    console.log("[open] Email sent successfully:", result.messageId)
     return { success: true }
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : "Failed to send email"

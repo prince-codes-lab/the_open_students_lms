@@ -127,22 +127,21 @@ Edit `scripts/004_seed_tours.sql` to add your tours, or create them via the admi
 
 Emails are sent via Supabase Auth with "supabase" as sender.
 
-### To Customize Emails (Requires Upgrade)
+### To Customize Emails
 
-**Option 1: Upgrade Supabase to Pro**
-1. Go to Supabase Dashboard
-2. Upgrade to Pro ($25/month)
-3. Navigate to Authentication → Email Templates
-4. Customize:
-   - Sender name: "The OPEN Students"
-   - Email templates
-   - Branding
+The platform uses **Nodemailer** for email delivery. Configure your SMTP provider:
 
-**Option 2: Use Third-Party Email Service**
-1. Sign up for Resend (https://resend.com) or SendGrid
-2. Get API key
-3. Update certificate email code to use the service
-4. Add API key to environment variables
+1. Set up an SMTP provider (Gmail, SendGrid, AWS SES, etc.)
+2. Add environment variables to `.env.local`:
+   ```
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=587
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASSWORD=your-app-password
+   SMTP_FROM=noreply@theopenstudents.com
+   SMTP_SECURE=false
+   ```
+3. The system automatically sends welcome emails on signup
 
 ## Step 6: Go Live
 
