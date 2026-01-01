@@ -41,9 +41,11 @@ export default async function HomePage() {
   }
 
   const defaultSamples: SliderItem[] = [
-    { imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200", caption: "Learning in action" },
-    { imageUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=1200", caption: "Collaboration and growth" },
-    { imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200", caption: "Practical, real-world skills" },
+    { imageUrl: "/slider-1.jpg", caption: "Learning in action" },
+    { imageUrl: "/slider-2.jpg", caption: "Community outreach" },
+    { imageUrl: "/slider-3.jpg", caption: "Mentorship & workshops" },
+    { imageUrl: "/slider-4.jpg", caption: "Student appreciation" },
+    { imageUrl: "/slider-5.jpg", caption: "Engaged classrooms" },
   ]
   if (!Array.isArray(sliderItems) || sliderItems.length === 0) {
     sliderItems = defaultSamples
