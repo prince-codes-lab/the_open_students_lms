@@ -57,20 +57,20 @@ export default function CommunityPage() {
   const daysUntil = Math.ceil((nextTourDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#DD91D0]/5 to-[#FF2768]/5">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-br from-[#4E0942] via-[#DD91D0] to-[#FF2768]">
+      <section className="pt-32 pb-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in-up">
             <Badge className="bg-[#FEEB00] text-[#4E0942] hover:bg-[#FEEB00]/90 text-sm font-bold px-4 py-2">
               Join Our Community
             </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold text-white text-balance">
+            <h1 className="text-5xl md:text-6xl font-bold text-[#4E0942] text-balance">
               Be Part of Something <span className="text-[#FEEB00]">Amazing</span>
             </h1>
-            <p className="text-xl text-white/90 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-xl text-gray-700 leading-relaxed max-w-2xl mx-auto">
               Connect with like-minded learners, stay updated on upcoming tours, and be part of a vibrant community
               that&apos;s redefining education.
             </p>
@@ -87,7 +87,7 @@ export default function CommunityPage() {
                 <Sparkles className="text-[#FF2768]" size={32} />
                 <h2 className="text-4xl font-bold text-[#4E0942]">Coming Soon</h2>
               </div>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
             </div>
 
             <Card className="border-4 border-[#FEEB00] shadow-2xl animate-scale-in">
@@ -99,7 +99,7 @@ export default function CommunityPage() {
                     </h3>
                     <div className="flex justify-center gap-4 md:gap-8">
                       <div className="text-center">
-                        <div className="w-20 h-20 md:w-28 md:h-28 bg-gradient-to-br from-[#4E0942] to-[#DD91D0] rounded-2xl flex items-center justify-center mb-2">
+                        <div className="w-20 h-20 md:w-28 md:h-28 bg-[#4E0942] rounded-2xl flex items-center justify-center mb-2">
                           <span className="text-3xl md:text-5xl font-bold text-white">
                             {Math.floor(daysUntil / 30)}
                           </span>
@@ -107,7 +107,7 @@ export default function CommunityPage() {
                         <span className="text-sm text-gray-600 font-semibold">Months</span>
                       </div>
                       <div className="text-center">
-                        <div className="w-20 h-20 md:w-28 md:h-28 bg-gradient-to-br from-[#FF2768] to-[#DD91D0] rounded-2xl flex items-center justify-center mb-2">
+                        <div className="w-20 h-20 md:w-28 md:h-28 bg-[#FF2768] rounded-2xl flex items-center justify-center mb-2">
                           <span className="text-3xl md:text-5xl font-bold text-white">{daysUntil % 30}</span>
                         </div>
                         <span className="text-sm text-gray-600 font-semibold">Days</span>
@@ -115,7 +115,7 @@ export default function CommunityPage() {
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-[#4E0942]/5 to-[#DD91D0]/5 rounded-lg p-6 space-y-4">
+                  <div className="rounded-lg p-6 space-y-4 bg-white">
                     <div className="flex items-center justify-center gap-3">
                       <MapPin className="text-[#FF2768]" size={24} />
                       <h4 className="text-xl font-bold text-[#4E0942]">First Stop: Lagos Innovation Tour</h4>
@@ -145,7 +145,7 @@ export default function CommunityPage() {
       </section>
 
       {/* TOS Community Section */}
-      <section className="py-16 bg-gradient-to-br from-[#DD91D0]/10 to-[#FF2768]/10">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center space-y-4 animate-fade-in-up">
@@ -153,7 +153,7 @@ export default function CommunityPage() {
                 <Users className="text-[#4E0942]" size={32} />
                 <h2 className="text-4xl font-bold text-[#4E0942]">TOS Community</h2>
               </div>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
               <p className="text-lg text-gray-700 max-w-2xl mx-auto">
                 Join our digital community for peer-to-peer learning, mentorship, networking, and exclusive updates.
               </p>
@@ -173,7 +173,7 @@ export default function CommunityPage() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-4 p-4 rounded-lg border-2 hover:border-[#FF2768] hover:bg-[#FF2768]/5 transition-all group"
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#FF2768] to-[#DD91D0] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-[#FF2768] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Instagram size={24} className="text-white" />
                     </div>
                     <div className="flex-1">
@@ -188,7 +188,7 @@ export default function CommunityPage() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-4 p-4 rounded-lg border-2 hover:border-[#4E0942] hover:bg-[#4E0942]/5 transition-all group"
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#4E0942] to-[#DD91D0] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-[#4E0942] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Twitter size={24} className="text-white" />
                     </div>
                     <div className="flex-1">
@@ -203,7 +203,7 @@ export default function CommunityPage() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-4 p-4 rounded-lg border-2 hover:border-[#FF2768] hover:bg-[#FF2768]/5 transition-all group"
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#FF2768] to-[#4E0942] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 bg-[#FF2768] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Youtube size={24} className="text-white" />
                     </div>
                     <div className="flex-1">
@@ -357,7 +357,7 @@ export default function CommunityPage() {
       </section>
 
       {/* Testimonials Placeholder */}
-      <section className="py-16 bg-gradient-to-br from-[#4E0942] to-[#DD91D0]">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in-up">
             <h2 className="text-4xl font-bold text-white">What Our Students Say</h2>
@@ -365,7 +365,7 @@ export default function CommunityPage() {
             <Card className="border-2 border-[#FEEB00] bg-white/95 backdrop-blur-sm">
               <CardContent className="p-12">
                 <div className="space-y-6">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#4E0942] to-[#DD91D0] rounded-full mx-auto flex items-center justify-center">
+                  <div className="w-20 h-20 bg-[#4E0942] rounded-full mx-auto flex items-center justify-center">
                     <Sparkles size={40} className="text-[#FEEB00]" />
                   </div>
                   <p className="text-xl text-gray-700 italic">

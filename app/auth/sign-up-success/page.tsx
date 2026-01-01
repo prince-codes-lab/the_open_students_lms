@@ -4,7 +4,7 @@ import Link from "next/link"
 
 export default function SignUpSuccessPage() {
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6 bg-gradient-to-br from-[#4E0942] via-[#DD91D0] to-[#FF2768]">
+    <div className="flex min-h-screen w-full items-center justify-center p-6 bg-white">
       <div className="w-full max-w-md animate-scale-in">
         <Card className="border-2 border-[#FEEB00] shadow-2xl">
           <CardHeader className="space-y-2 text-center">

@@ -19,7 +19,7 @@ export default async function EnrollmentSuccessPage({ searchParams }: { searchPa
   const mongoUri = process.env.MONGODB_URI
   if (!mongoUri) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-[#DD91D0]/5 to-[#FF2768]/5">
+      <div className="min-h-screen bg-white">
         <Navigation />
         <section className="pt-32 pb-16">
           <div className="container mx-auto px-4">
@@ -58,7 +58,7 @@ export default async function EnrollmentSuccessPage({ searchParams }: { searchPa
   const itemTitle = enrollment?.courseId?.title || enrollment?.tourId?.title || "Your Program"
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#DD91D0]/5 to-[#FF2768]/5">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       <section className="pt-32 pb-16">
@@ -79,7 +79,7 @@ export default async function EnrollmentSuccessPage({ searchParams }: { searchPa
                   <p className="text-sm text-gray-600">Reference: {reference}</p>
                 </div>
 
-                <div className="bg-gradient-to-br from-[#4E0942]/5 to-[#DD91D0]/5 rounded-lg p-6 space-y-4">
+                <div className="rounded-lg p-6 space-y-4 bg-white">
                   <h3 className="font-bold text-[#4E0942] text-lg">What&apos;s Next?</h3>
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">

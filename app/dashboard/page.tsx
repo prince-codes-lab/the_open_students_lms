@@ -27,7 +27,7 @@ export default async function DashboardPage() {
   const mongoUri = process.env.MONGODB_URI
   if (!mongoUri) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-[#DD91D0]/5 to-[#FF2768]/5">
+      <div className="min-h-screen bg-white">
         <Navigation />
         <section className="pt-32 pb-16">
           <div className="container mx-auto px-4">
@@ -78,7 +78,7 @@ export default async function DashboardPage() {
       : 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#DD91D0]/5 to-[#FF2768]/5">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       <section className="pt-32 pb-16">
@@ -346,7 +346,7 @@ export default async function DashboardPage() {
             {enrollments.length === 0 && (
               <Card className="border-2 border-[#DD91D0] shadow-xl animate-scale-in">
                 <CardContent className="p-12 text-center space-y-6">
-                  <div className="w-24 h-24 bg-gradient-to-br from-[#4E0942] to-[#DD91D0] rounded-full flex items-center justify-center mx-auto">
+                  <div className="w-24 h-24 bg-[#4E0942] rounded-full flex items-center justify-center mx-auto">
                     <BookOpen size={48} className="text-white" />
                   </div>
                   <div className="space-y-2">

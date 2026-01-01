@@ -106,7 +106,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#DD91D0]/5 to-[#FF2768]/5">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       <section className="pt-32 pb-16">

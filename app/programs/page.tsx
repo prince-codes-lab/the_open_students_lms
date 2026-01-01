@@ -32,7 +32,7 @@ export default async function ProgramsPage() {
   const mongoUri = process.env.MONGODB_URI
   if (!mongoUri) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FFFFFF] via-[#DD91D0]/5 to-[#FF2768]/5">
+      <div className="min-h-screen bg-white">
         <Navigation />
         <section className="pt-32 pb-16">
           <div className="container mx-auto px-4">
@@ -55,7 +55,7 @@ export default async function ProgramsPage() {
   const conn = await connectDBWithRetry(mongoUri)
   if (!conn) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FFFFFF] via-[#DD91D0]/5 to-[#FF2768]/5">
+      <div className="min-h-screen bg-white">
         <Navigation />
         <section className="pt-32 pb-16">
           <div className="container mx-auto px-4">
@@ -84,7 +84,7 @@ export default async function ProgramsPage() {
       .lean({ virtuals: true })
   } catch (err) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#FFFFFF] via-[#DD91D0]/5 to-[#FF2768]/5">
+      <div className="min-h-screen bg-white">
         <Navigation />
         <section className="pt-32 pb-16">
           <div className="container mx-auto px-4">
@@ -107,11 +107,11 @@ export default async function ProgramsPage() {
   const courses = formatMongoData(rawCourses)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#DD91D0]/5 to-[#FF2768]/5">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-br from-[#4E0942] to-[#DD91D0]">
+      <section className="pt-32 pb-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in-up">
             <Badge className="bg-[#FEEB00] text-[#4E0942] hover:bg-[#FEEB00]/90 text-sm font-bold px-4 py-2">
@@ -134,7 +134,7 @@ export default async function ProgramsPage() {
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center space-y-4 animate-fade-in-up">
               <h2 className="text-4xl font-bold text-[#4E0942]">Individual Courses</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
               <p className="text-lg text-gray-700">₦5,000 per course | $5 per course</p>
             </div>
 
@@ -191,7 +191,7 @@ export default async function ProgramsPage() {
                 <Package className="text-[#FF2768]" size={32} />
                 <h2 className="text-4xl font-bold text-[#4E0942]">Combo Packages</h2>
               </div>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
               <p className="text-lg text-gray-700">Save more when you bundle courses together</p>
             </div>
 
@@ -300,7 +300,7 @@ export default async function ProgramsPage() {
       </section>
 
       {/* Organization Plans */}
-      <section className="py-16 bg-gradient-to-br from-[#DD91D0]/10 to-[#FF2768]/10">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center space-y-4 animate-fade-in-up">
@@ -308,7 +308,7 @@ export default async function ProgramsPage() {
                 <Building2 className="text-[#4E0942]" size={32} />
                 <h2 className="text-4xl font-bold text-[#4E0942]">Organization Plans</h2>
               </div>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
               <p className="text-lg text-gray-700">
                 Special pricing for schools, corporates, and educational organizations
               </p>
@@ -412,7 +412,7 @@ export default async function ProgramsPage() {
           <div className="max-w-4xl mx-auto space-y-12">
             <div className="text-center space-y-4 animate-fade-in-up">
               <h2 className="text-4xl font-bold text-[#4E0942]">How It Works</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
             </div>
 
             <div className="grid md:grid-cols-4 gap-6">
@@ -427,7 +427,7 @@ export default async function ProgramsPage() {
                   className="text-center space-y-4 animate-fade-in-up"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#4E0942] to-[#DD91D0] rounded-full flex items-center justify-center mx-auto text-white text-2xl font-bold">
+                  <div className="w-16 h-16 bg-[#4E0942] rounded-full flex items-center justify-center mx-auto text-white text-2xl font-bold">
                     {item.step}
                   </div>
                   <h3 className="text-xl font-bold text-[#4E0942]">{item.title}</h3>

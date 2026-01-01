@@ -14,7 +14,7 @@ export default async function AdminCoursesPage() {
   if (!mongoUri) {
     return (
       <AdminGuard>
-        <div className="min-h-screen bg-gradient-to-br from-[#DD91D0]/10 to-[#FF2768]/10">
+        <div className="min-h-screen bg-white">
           <div className="container mx-auto px-4 py-8">
             <Card className="border-2 border-[#4E0942]">
               <CardHeader>
@@ -43,7 +43,7 @@ export default async function AdminCoursesPage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#DD91D0]/10 to-[#FF2768]/10">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-8">
             <div>

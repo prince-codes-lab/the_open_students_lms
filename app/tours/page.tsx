@@ -16,7 +16,7 @@ export default async function ToursPage() {
   const mongoUri = process.env.MONGODB_URI
   if (!mongoUri) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-[#DD91D0]/5 to-[#FF2768]/5">
+      <div className="min-h-screen bg-white">
         <Navigation />
         <section className="pt-32 pb-16">
           <div className="container mx-auto px-4">
@@ -47,11 +47,11 @@ export default async function ToursPage() {
   const tours = formatMongoData(rawTours)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-[#DD91D0]/5 to-[#FF2768]/5">
+    <div className="min-h-screen bg-white">
       <Navigation />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-br from-[#FF2768] to-[#DD91D0]">
+      <section className="pt-32 pb-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in-up">
             <Badge className="bg-[#FEEB00] text-[#4E0942] hover:bg-[#FEEB00]/90 text-sm font-bold px-4 py-2">
@@ -110,7 +110,7 @@ export default async function ToursPage() {
           <div className="max-w-6xl mx-auto space-y-12">
             <div className="text-center space-y-4 animate-fade-in-up">
               <h2 className="text-4xl font-bold text-[#4E0942]">Upcoming Tours</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -162,7 +162,7 @@ export default async function ToursPage() {
       </section>
 
       {/* Future Plans */}
-      <section className="py-16 bg-gradient-to-br from-[#4E0942] to-[#DD91D0]">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in-up">
             <div className="flex items-center justify-center gap-3">
@@ -200,7 +200,7 @@ export default async function ToursPage() {
           <div className="max-w-4xl mx-auto space-y-12">
             <div className="text-center space-y-4 animate-fade-in-up">
               <h2 className="text-4xl font-bold text-[#4E0942]">What to Expect</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">

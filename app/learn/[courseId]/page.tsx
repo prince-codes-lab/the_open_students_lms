@@ -72,7 +72,7 @@ export default async function LearnCoursePage({ params }: { params: { courseId: 
   const course = formatMongoData(courseDoc)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#DD91D0]/10 to-[#FF2768]/10">
+    <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-[#4E0942] mb-2">{course.title}</h1>
@@ -87,7 +87,7 @@ export default async function LearnCoursePage({ params }: { params: { courseId: 
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
               <div
-                className="bg-gradient-to-r from-[#4E0942] to-[#DD91D0] h-3 rounded-full transition-all"
+                className="bg-[#4E0942] h-3 rounded-full transition-all"
                 style={{ width: `${enrollmentProgress}%` }}
               />
             </div>

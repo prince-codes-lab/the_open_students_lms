@@ -72,7 +72,7 @@ export default async function LessonPage({ params }: { params: { courseId: strin
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#DD91D0]/10 to-[#FF2768]/10">
+    <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6">

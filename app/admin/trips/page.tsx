@@ -111,7 +111,7 @@ export default function AdminTrips() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#DD91D0]/10 to-[#FF2768]/10">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-4xl font-bold text-[#4E0942]">Manage Trips & Memories</h1>

@@ -178,7 +178,7 @@ export default async function HomePage() {
             {/* Main About */}
             <div className="text-center space-y-6 animate-fade-in-up">
               <h2 className="text-4xl md:text-5xl font-bold text-[#4E0942]">About The OPEN Students</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
               <p className="text-lg text-gray-700 leading-relaxed">
                 The OPEN Students is an education technology (edtech) and youth development platform focused on bridging
                 the gap between academic learning and real-world application. We provide digital courses, practical
@@ -195,7 +195,7 @@ export default async function HomePage() {
             <Card className="border-2 border-[#DD91D0] shadow-xl overflow-hidden animate-slide-in-left">
               <CardContent className="p-0">
                 <div className="grid md:grid-cols-2 gap-0">
-                  <div className="bg-gradient-to-br from-[#4E0942] to-[#DD91D0] p-8 flex items-center justify-center">
+                  <div className="p-8 flex items-center justify-center bg-white">
                     <div className="text-center space-y-4">
                       {founder?.imageUrl ? (
                         <div className="w-32 h-32 rounded-full mx-auto overflow-hidden relative">
@@ -214,7 +214,7 @@ export default async function HomePage() {
                         </div>
                       )}
                       <div>
-                        <h3 className="text-2xl font-bold text-white">{founder?.name || "Daniella Williams"}</h3>
+                        <h3 className="text-2xl font-bold text-[#4E0942]">{founder?.name || "Daniella Williams"}</h3>
                         <p className="text-[#FEEB00]">{founder?.title || "Founder & Visionary"}</p>
                       </div>
                     </div>
@@ -233,12 +233,12 @@ export default async function HomePage() {
       </section>
 
       {/* Brand Values Section */}
-      <section className="py-20 bg-gradient-to-br from-[#DD91D0]/10 to-[#FF2768]/10">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center space-y-4 mb-12 animate-fade-in-up">
               <h2 className="text-4xl md:text-5xl font-bold text-[#4E0942]">Our Core Values</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto" />
               <p className="text-lg text-gray-700">The principles that guide everything we do</p>
             </div>
 
@@ -309,7 +309,7 @@ export default async function HomePage() {
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <div className="animate-fade-in-up">
               <h2 className="text-4xl md:text-5xl font-bold text-[#4E0942] mb-4">Meet Our Team</h2>
-              <div className="w-24 h-1 bg-gradient-to-r from-[#FF2768] to-[#FEEB00] mx-auto mb-6" />
+              <div className="w-24 h-1 bg-[#FF2768] mx-auto mb-6" />
               <p className="text-lg text-gray-700">
                 We&apos;re building an amazing team of passionate individuals dedicated to transforming education.
               </p>
@@ -318,7 +318,7 @@ export default async function HomePage() {
             <Card className="border-2 border-[#DD91D0] shadow-xl animate-scale-in delay-200">
               <CardContent className="p-12">
                 <div className="space-y-6">
-                  <div className="w-24 h-24 bg-gradient-to-br from-[#4E0942] to-[#DD91D0] rounded-full mx-auto flex items-center justify-center">
+                    <div className="w-24 h-24 bg-[#4E0942] rounded-full mx-auto flex items-center justify-center">
                     <Users size={40} className="text-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-[#4E0942]">Join Our Growing Team</h3>
@@ -337,13 +337,13 @@ export default async function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-[#4E0942] to-[#DD91D0]">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center space-y-8 animate-fade-in-up">
-            <h2 className="text-4xl md:text-5xl font-bold text-white text-balance font-sans">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#4E0942] text-balance font-sans">
               Ready to Go <span className="text-[#FEEB00]">Beyond the Classroom?</span>
             </h2>
-            <p className="text-xl text-white/90 leading-relaxed">
+            <p className="text-xl text-gray-700 leading-relaxed">
               Join thousands of students already transforming their futures with practical skills and real-world
               experiences.
             </p>
