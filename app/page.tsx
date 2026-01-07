@@ -102,7 +102,7 @@ export default async function HomePage() {
         </div>
 
         {/* Hero Slider */}
-        <HeroSlider />
+        <HeroSlider asBackground={true} />
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto text-center space-y-8">

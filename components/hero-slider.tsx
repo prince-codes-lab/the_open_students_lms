@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Image from "next/image"
 
 const slides = [
   '/slider-1.svg',
@@ -33,15 +32,11 @@ export function HeroSlider({ asBackground = false }: { asBackground?: boolean })
     >
       <div className={asBackground ? "absolute inset-0 h-full" : "relative h-[60vh] md:h-[70vh]"}>
         {slides.map((slide, i) => (
-          <Image
+          <img
             key={slide + i}
             src={slide}
             alt={`Slide ${i + 1}`}
-            fill
-            sizes="100vw"
-            unoptimized
-            className={`object-cover absolute inset-0 transition-opacity duration-700 ${i === index ? "opacity-100" : "opacity-0"}`}
-            priority={i === 0}
+            className={`object-cover absolute inset-0 w-full h-full transition-opacity duration-700 ${i === index ? "opacity-100" : "opacity-0"}`}
           />
         ))}
         {asBackground && <div className="absolute inset-0 bg-black/40" />}
