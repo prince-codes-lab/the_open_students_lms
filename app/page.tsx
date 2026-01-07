@@ -3,7 +3,6 @@ import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
-import { Sparkles, Target, Users, Lightbulb, TrendingUp, Heart } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { connectDBWithRetry } from "@/lib/mongodb/connection"
 import { AdminSettings } from "@/lib/mongodb/models/AdminSettings"
@@ -25,7 +24,8 @@ export default async function HomePage() {
       const conn = await connectDBWithRetry(mongoUri)
       const settings = (await AdminSettings.findOne().lean()) as unknown as { homepageSlider?: SliderItem[] } | null
       const items = (settings?.homepageSlider as SliderItem[] | undefined) ?? []
-      sliderItems = Array.isArray(items) ? items : []
+      // Keep only entries with a valid imageUrl to avoid blank slides
+      sliderItems = Array.isArray(items) ? items.filter((i) => !!i?.imageUrl) : []
     } catch {
       // Fallback to API cached settings
       try {
@@ -34,7 +34,7 @@ export default async function HomePage() {
         if (res.ok) {
           const data = (await res.json()) as { homepageSlider?: SliderItem[] } | null
           const items = (data?.homepageSlider as SliderItem[] | undefined) ?? []
-          sliderItems = Array.isArray(items) ? items : []
+          sliderItems = Array.isArray(items) ? items.filter((i) => !!i?.imageUrl) : []
         }
       } catch {}
     }
@@ -205,7 +205,7 @@ export default async function HomePage() {
                             src={founder.imageUrl || "/placeholder.svg"}
                             alt={founder?.name || "Founder"}
                             fill
-                            sizes="128px"
+                            sizes="128px" 
                             unoptimized
                             className="object-cover"
                           />
@@ -245,44 +245,46 @@ export default async function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  icon: Target,
-                  title: "Practicality",
-                  description: "We prioritize applicable knowledge that makes a real difference",
-                  color: "#FF2768",
-                },
-                {
-                  icon: Heart,
-                  title: "Transparency",
-                  description: "We keep it real and honest in everything we do",
-                  color: "#FEEB00",
-                },
-                {
-                  icon: Users,
-                  title: "Collaboration",
-                  description: "We build with people and for people",
-                  color: "#4E0942",
-                },
-                {
-                  icon: Sparkles,
-                  title: "Empowerment",
-                  description: "We empower learners to take charge of their growth",
-                  color: "#DD91D0",
-                },
-                {
-                  icon: Lightbulb,
-                  title: "Innovation",
-                  description: "We seek fresh ways to bridge learning and life",
-                  color: "#FF2768",
-                },
-                {
-                  icon: TrendingUp,
-                  title: "Excellence",
-                  description: "We strive for excellence in every learning experience",
-                  color: "#FEEB00",
-                },
-              ].map((value, index) => (
+              {(
+                [
+                  {
+                    emoji: "🎯",
+                    title: "Practicality",
+                    description: "We prioritize applicable knowledge that makes a real difference",
+                    color: "#FF2768",
+                  },
+                  {
+                    emoji: "❤️",
+                    title: "Transparency",
+                    description: "We keep it real and honest in everything we do",
+                    color: "#FEEB00",
+                  },
+                  {
+                    emoji: "🤝",
+                    title: "Collaboration",
+                    description: "We build with people and for people",
+                    color: "#4E0942",
+                  },
+                  {
+                    emoji: "⭐",
+                    title: "Empowerment",
+                    description: "We empower learners to take charge of their growth",
+                    color: "#DD91D0",
+                  },
+                  {
+                    emoji: "💡",
+                    title: "Innovation",
+                    description: "We seek fresh ways to bridge learning and life",
+                    color: "#FF2768",
+                  },
+                  {
+                    emoji: "🏆",
+                    title: "Excellence",
+                    description: "We strive for excellence in every learning experience",
+                    color: "#FEEB00",
+                  },
+                ] as const
+              ).map((value, index) => (
                 <Card
                   key={value.title}
                   className="border-2 hover:border-[#FF2768] transition-all hover:shadow-xl group animate-scale-in"
@@ -290,10 +292,10 @@ export default async function HomePage() {
                 >
                   <CardContent className="p-6 space-y-4">
                     <div
-                      className="w-14 h-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"
+                      className="w-14 h-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform text-2xl"
                       style={{ backgroundColor: `${value.color}20` }}
                     >
-                      <value.icon size={28} style={{ color: value.color }} />
+                      {value.emoji}
                     </div>
                     <h3 className="text-xl font-bold text-[#4E0942]">{value.title}</h3>
                     <p className="text-gray-700 leading-relaxed">{value.description}</p>
@@ -320,8 +322,8 @@ export default async function HomePage() {
             <Card className="border-2 border-[#DD91D0] shadow-xl animate-scale-in delay-200">
               <CardContent className="p-12">
                 <div className="space-y-6">
-                    <div className="w-24 h-24 bg-[#4E0942] rounded-full mx-auto flex items-center justify-center">
-                    <Users size={40} className="text-white" />
+                    <div className="w-24 h-24 bg-[#4E0942] rounded-full mx-auto flex items-center justify-center text-4xl">
+                    👥
                   </div>
                   <h3 className="text-2xl font-bold text-[#4E0942]">Join Our Growing Team</h3>
                   <p className="text-gray-700 leading-relaxed">

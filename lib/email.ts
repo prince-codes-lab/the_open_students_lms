@@ -24,11 +24,18 @@ export async function sendEmail(options: EmailOptions): Promise<{ success: boole
 
   try {
     // Validate SMTP configuration
-    if (!process.env.SMTP_HOST && !process.env.SMTP_USER) {
-      console.warn("[open] SMTP not configured - email will not be sent")
+    const missing = []
+    if (!process.env.SMTP_HOST) missing.push("SMTP_HOST")
+    if (!process.env.SMTP_PORT) missing.push("SMTP_PORT")
+    if (!process.env.SMTP_USER) missing.push("SMTP_USER")
+    if (!process.env.SMTP_PASSWORD) missing.push("SMTP_PASSWORD")
+
+    if (missing.length > 0) {
+      const msg = `[open] SMTP not configured or missing env: ${missing.join(", ")}`
+      console.warn(msg)
       console.log("[open] Email would be sent to:", to)
       console.log("[open] Subject:", subject)
-      return { success: true } // Don't fail signup if email is not configured
+      return { success: false, error: msg }
     }
 
     // Verify transporter before sending
@@ -49,8 +56,8 @@ export async function sendEmail(options: EmailOptions): Promise<{ success: boole
     const errorMsg = error instanceof Error ? error.message : "Failed to send email"
     console.error("[open] Email sending error:", errorMsg)
     console.error("[open] Error details:", error)
-    // Don't fail the operation if email fails but log the error
-    return { success: true, error: errorMsg }
+    // Return failure so callers can surface the problem
+    return { success: false, error: errorMsg }
   }
 }
 
