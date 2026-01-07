@@ -1,0 +1,19 @@
+nohup: ignoring input
+
+> open-students@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+   ▲ Next.js 15.5.9
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.0.196:3001
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 5.8s
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 1059ms (195 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 16.1s (709 modules)
+[open] MongoDB connected successfully
+[open] MongoDB 2 connected successfully
