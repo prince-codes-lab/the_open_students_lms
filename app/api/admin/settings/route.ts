@@ -10,17 +10,19 @@ export async function GET() {
   try {
     const mongoUri = process.env.MONGODB_URI
     const envDefaults = {
+      // Public keys / safe to expose
       NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "",
-      PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY || "",
       NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "",
-      JWT_SECRET: process.env.JWT_SECRET || "",
-      MONGODB_URI: process.env.MONGODB_URI || "",
-      MONGODB_URI_2: process.env.MONGODB_URI_2 || "",
       NEXT_PUBLIC_ADMIN_EMAIL: process.env.NEXT_PUBLIC_ADMIN_EMAIL || "",
-      ADMIN_EMAIL: process.env.ADMIN_EMAIL || "",
-      ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "",
-      MAILCHIMP_API_KEY: process.env.MAILCHIMP_API_KEY || "",
       MAILCHIMP_AUDIENCE_ID: process.env.MAILCHIMP_AUDIENCE_ID || "",
+      // Presence flags for sensitive values (do NOT expose raw secrets)
+      PAYSTACK_SECRET_KEY_CONFIGURED: !!process.env.PAYSTACK_SECRET_KEY,
+      JWT_SECRET_CONFIGURED: !!process.env.JWT_SECRET,
+      MONGODB_URI_CONFIGURED: !!process.env.MONGODB_URI,
+      MONGODB_URI_2_CONFIGURED: !!process.env.MONGODB_URI_2,
+      ADMIN_EMAIL_CONFIGURED: !!process.env.ADMIN_EMAIL,
+      ADMIN_PASSWORD_CONFIGURED: !!process.env.ADMIN_PASSWORD,
+      MAILCHIMP_API_KEY_CONFIGURED: !!process.env.MAILCHIMP_API_KEY,
     }
     if (!mongoUri) {
       return NextResponse.json({ ...(cachedSettings || {}), environmentDefaults: envDefaults }, { status: 200 })
@@ -40,16 +42,16 @@ export async function GET() {
     console.error("[open] Settings fetch error:", error)
     const envDefaults = {
       NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "",
-      PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY || "",
       NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "",
-      JWT_SECRET: process.env.JWT_SECRET || "",
-      MONGODB_URI: process.env.MONGODB_URI || "",
-      MONGODB_URI_2: process.env.MONGODB_URI_2 || "",
       NEXT_PUBLIC_ADMIN_EMAIL: process.env.NEXT_PUBLIC_ADMIN_EMAIL || "",
-      ADMIN_EMAIL: process.env.ADMIN_EMAIL || "",
-      ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "",
-      MAILCHIMP_API_KEY: process.env.MAILCHIMP_API_KEY || "",
       MAILCHIMP_AUDIENCE_ID: process.env.MAILCHIMP_AUDIENCE_ID || "",
+      PAYSTACK_SECRET_KEY_CONFIGURED: !!process.env.PAYSTACK_SECRET_KEY,
+      JWT_SECRET_CONFIGURED: !!process.env.JWT_SECRET,
+      MONGODB_URI_CONFIGURED: !!process.env.MONGODB_URI,
+      MONGODB_URI_2_CONFIGURED: !!process.env.MONGODB_URI_2,
+      ADMIN_EMAIL_CONFIGURED: !!process.env.ADMIN_EMAIL,
+      ADMIN_PASSWORD_CONFIGURED: !!process.env.ADMIN_PASSWORD,
+      MAILCHIMP_API_KEY_CONFIGURED: !!process.env.MAILCHIMP_API_KEY,
     }
     return NextResponse.json({ ...(cachedSettings || {}), environmentDefaults: envDefaults }, { status: 200 })
   }

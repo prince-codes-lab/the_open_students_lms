@@ -43,28 +43,32 @@ export async function POST(request: Request) {
     }
 
     // Send verification email BEFORE creating JWT
+    let emailSent = false
+    let emailError: string | undefined = undefined
     try {
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://theopenstudents.com"
       const verificationLink = `${siteUrl}/api/auth/verify-email?email=${encodeURIComponent(email)}&token=${result.user?.verificationToken}`
-      
+
       const emailContent = generateVerificationEmail(fullName, verificationLink, email)
       const emailResult = await sendEmail({
         to: email,
         subject: "Verify Your Email - The OPEN Students",
         html: emailContent,
       })
-      
-      if (emailResult.error) {
-        console.error("[open] Email sending failed:", emailResult.error)
+
+      if (!emailResult.success) {
+        emailError = emailResult.error || "Unknown email error"
+        console.error("[open] Email sending failed:", emailError)
       } else {
+        emailSent = true
         console.log("[open] Verification email sent to:", email)
       }
-    } catch (emailError) {
-      console.error("[open] Verification email error:", emailError)
-      // Don't fail signup if email sending fails, but warn user
+    } catch (emailErr) {
+      emailError = emailErr instanceof Error ? emailErr.message : String(emailErr)
+      console.error("[open] Verification email error:", emailErr)
     }
 
-    // Return response indicating email verification is required
+    // Return response indicating email verification is required and include email send status
     return NextResponse.json(
       {
         success: true,
@@ -75,6 +79,8 @@ export async function POST(request: Request) {
           fullName: result.user?.fullName,
         },
         emailVerificationRequired: true,
+        emailSent,
+        emailError,
       },
       { status: 201 },
     )
