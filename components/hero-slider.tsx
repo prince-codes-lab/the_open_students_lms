@@ -4,11 +4,11 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 
 const slides = [
-  '/slider-1.jpg',
-  '/slider-2.jpg',
-  '/slider-3.jpg',
-  '/slider-4.jpg',
-  '/slider-5.jpg',
+  '/slider-1.svg',
+  '/slider-2.svg',
+  '/slider-3.svg',
+  '/slider-4.svg',
+  '/slider-5.svg',
 ];
 
 export function HeroSlider({ asBackground = false }: { asBackground?: boolean }) {
