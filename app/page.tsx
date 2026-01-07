@@ -6,10 +6,10 @@ import Link from "next/link"
 import { Logo } from "@/components/logo"
 import { connectDBWithRetry } from "@/lib/mongodb/connection"
 import { AdminSettings } from "@/lib/mongodb/models/AdminSettings"
-// Removed HeroSlider import
 import Image from "next/image"
 import { connectDB2WithRetry } from "@/lib/mongodb/connection"
 import { FounderSchema } from "@/lib/mongodb/models/Founder"
+import { HeroSlider } from "@/components/hero-slider" // Fixed import
 type SliderItem = { imageUrl: string; caption?: string }
 type FounderData = { name?: string; title?: string; bio?: string; imageUrl?: string }
 
@@ -101,36 +101,14 @@ export default async function HomePage() {
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#FF2768]/20 rounded-full blur-3xl animate-float delay-200" />
         </div>
 
-        {/* Hardcoded Hero Slider as Background */}
-        <div className="absolute inset-0 z-0">
-          <div className="relative w-full h-full">
-            {[
-              '/slider-1.jpg',
-              '/slider-2.jpg',
-              '/slider-3.jpg',
-              '/slider-4.jpg',
-              '/slider-5.jpg',
-            ].map((slide, index) => (
-              <Image
-                key={index}
-                src={slide}
-                alt={`Slide ${index + 1}`}
-                fill
-                className={`object-cover transition-opacity duration-1000 ${
-                  index === 0 ? 'opacity-100' : 'opacity-0'
-                }`}
-                style={{ animation: `slide-${index} 25s infinite` }}
-                priority={index === 0}
-              />
-            ))}
-          </div>
-        </div>
+        {/* Hero Slider */}
+        <HeroSlider />
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto text-center space-y-8">
             {!sliderItems.length && (
               <div className="animate-scale-in">
-                <div className="inline-block p-8 bg:white/10 backdrop-blur-sm rounded-3xl border-4 border-[#FEEB00] shadow-2xl">
+                <div className="inline-block p-8 bg-white/10 backdrop-blur-sm rounded-3xl border-4 border-[#FEEB00] shadow-2xl">
                   <Logo size="lg" />
                 </div>
               </div>
