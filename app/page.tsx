@@ -41,11 +41,11 @@ export default async function HomePage() {
   }
 
   const defaultSamples: SliderItem[] = [
-    { imageUrl: "/slider-1.jpg", caption: "Learning in action" },
-    { imageUrl: "/slider-2.jpg", caption: "Community outreach" },
-    { imageUrl: "/slider-3.jpg", caption: "Mentorship & workshops" },
-    { imageUrl: "/slider-4.jpg", caption: "Student appreciation" },
-    { imageUrl: "/slider-5.jpg", caption: "Engaged classrooms" },
+    { imageUrl: "/slider-1.svg", caption: "Learning in action" },
+    { imageUrl: "/slider-2.svg", caption: "Community outreach" },
+    { imageUrl: "/slider-3.svg", caption: "Mentorship & workshops" },
+    { imageUrl: "/slider-4.svg", caption: "Student appreciation" },
+    { imageUrl: "/slider-5.svg", caption: "Engaged classrooms" },
   ]
   if (!Array.isArray(sliderItems) || sliderItems.length === 0) {
     sliderItems = defaultSamples
