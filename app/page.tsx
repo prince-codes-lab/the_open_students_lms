@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Logo } from "@/components/logo"
 import { connectDBWithRetry } from "@/lib/mongodb/connection"
 import { AdminSettings } from "@/lib/mongodb/models/AdminSettings"
-import { HeroSlider } from "@/components/hero-slider"
+// Removed HeroSlider import
 import Image from "next/image"
 import { connectDB2WithRetry } from "@/lib/mongodb/connection"
 import { FounderSchema } from "@/lib/mongodb/models/Founder"
@@ -101,7 +101,31 @@ export default async function HomePage() {
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#FF2768]/20 rounded-full blur-3xl animate-float delay-200" />
         </div>
 
-        {sliderItems.length > 0 && <HeroSlider items={sliderItems} asBackground />}
+        {/* Hardcoded Hero Slider as Background */}
+        <div className="absolute inset-0 z-0">
+          <div className="relative w-full h-full">
+            {[
+              '/slider-1.jpg',
+              '/slider-2.jpg',
+              '/slider-3.jpg',
+              '/slider-4.jpg',
+              '/slider-5.jpg',
+            ].map((slide, index) => (
+              <Image
+                key={index}
+                src={slide}
+                alt={`Slide ${index + 1}`}
+                fill
+                className={`object-cover transition-opacity duration-1000 ${
+                  index === 0 ? 'opacity-100' : 'opacity-0'
+                }`}
+                style={{ animation: `slide-${index} 25s infinite` }}
+                priority={index === 0}
+              />
+            ))}
+          </div>
+        </div>
+
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto text-center space-y-8">
             {!sliderItems.length && (
