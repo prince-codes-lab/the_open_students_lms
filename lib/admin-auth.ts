@@ -4,25 +4,28 @@
 function getAdminCredentials() {
   // In production require environment variables. In non-production (dev/test)
   // allow a local fallback to make development/testing easier.
-  const inProduction = process.env.NODE_ENV === "production"
+  // const inProduction = process.env.NODE_ENV === "production"
 
   const adminEmailEnv = process.env.ADMIN_EMAIL || process.env.NEXT_PUBLIC_ADMIN_EMAIL
   const adminPasswordEnv = process.env.ADMIN_PASSWORD
 
-  if (inProduction) {
-    return {
-      email: adminEmailEnv || "",
-      password: adminPasswordEnv || "",
-    }
-  }
+  // if (inProduction) {
+  //   return {
+  //     email: adminEmailEnv || "",
+  //     password: adminPasswordEnv || "",
+  //   }
+  // }
 
   // Dev fallback (non-production)
   const FALLBACK_ADMIN_EMAIL = "sheisdaniellawilliams@gmail.com"
   const FALLBACK_ADMIN_PASSWORD = "sheisdaniellawilliams"
-
+  //  return {
+  //   email: adminEmailEnv || FALLBACK_ADMIN_EMAIL,
+  //   password: adminPasswordEnv || FALLBACK_ADMIN_PASSWORD,
+  // }
   return {
-    email: adminEmailEnv || FALLBACK_ADMIN_EMAIL,
-    password: adminPasswordEnv || FALLBACK_ADMIN_PASSWORD,
+    email: FALLBACK_ADMIN_EMAIL,
+    password: FALLBACK_ADMIN_PASSWORD,
   }
 }
 
