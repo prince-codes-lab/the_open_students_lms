@@ -3,16 +3,20 @@
 import { useEffect, useState } from "react"
 
 const slides = [
-  '/slider-1.svg',
-  '/slider-2.svg',
-  '/slider-3.svg',
-  '/slider-4.svg',
-  '/slider-5.svg',
+  '/slider-1.jpg',
+  '/slider-2.jpg',
+  '/slider-3.jpg',
+  '/slider-4.jpg',
+  '/slider-5.jpg',
 ];
 
 export function HeroSlider({ asBackground = false }: { asBackground?: boolean }) {
   const [index, setIndex] = useState(0)
   const [isHover, setIsHover] = useState(false)
+
+  useEffect(() => {
+    console.log("HeroSlider mounted, slides:", slides.length)
+  }, [])
 
   useEffect(() => {
     if (slides.length <= 1 || isHover) return
@@ -30,6 +34,8 @@ export function HeroSlider({ asBackground = false }: { asBackground?: boolean })
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
+      {/* Temporary debug */}
+      <div className="absolute top-0 left-0 bg-red-500 text-white p-2 z-50">Slider Rendering</div>
       <div className={asBackground ? "absolute inset-0 h-full" : "relative h-[60vh] md:h-[70vh]"}>
         {slides.map((slide, i) => (
           <img
@@ -41,19 +47,17 @@ export function HeroSlider({ asBackground = false }: { asBackground?: boolean })
         ))}
         {asBackground && <div className="absolute inset-0 bg-black/40" />}
       </div>
-      {!asBackground && (
-        <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              aria-label={`Go to slide ${i + 1}`}
-              onClick={() => setIndex(i)}
-              className={`w-2.5 h-2.5 rounded-full ${i === index ? "bg-white" : "bg-white/50"}`}
-            />
-          ))}
-        </div>
-      )}
-      {!asBackground && slides.length > 1 && (
+      <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            aria-label={`Go to slide ${i + 1}`}
+            onClick={() => setIndex(i)}
+            className={`w-2.5 h-2.5 rounded-full ${i === index ? "bg-white" : "bg-white/50"}`}
+          />
+        ))}
+      </div>
+      {slides.length > 1 && (
         <>
           <button
             aria-label="Previous slide"
